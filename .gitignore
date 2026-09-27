@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+uv.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files
+data/raw/
+data/processed/
+*.npy
+*.npz
+*.h5
+*.hdf5
+sample.md
+slides/
+
+# Large results
+results/models/
+*.pkl
+*.joblib
+
+# MkDocs build output
+site/
+
+# Secrets / credentials
+.env
+*.key

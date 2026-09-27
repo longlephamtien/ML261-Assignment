@@ -1,0 +1,2 @@
+model,week,depth,macro_f1,accuracy,train_time_s,notes
+baseline_majority,W05,—,,,,"Majority-class baseline"

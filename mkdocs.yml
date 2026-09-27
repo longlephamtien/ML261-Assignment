@@ -1,0 +1,82 @@
+site_name: ML261-Assignment
+site_description: Assignment for CO3117 ML, Semester 261
+site_author: Lê Phạm Tiến Long
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - header.autohide
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+  font:
+    text: Outfit
+    code: Fira Code
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.details
+  - pymdownx.critic
+  - pymdownx.keys
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - Pre-Release:
+    - W01-W04 Catch-up: pre-release/PRE_RELEASE_CATCHUP.md
+  - "Part I: Pre-Midterm":
+    - W05 - Perceptron & MLP: weekly/w05-perceptron-mlp.md
+    - W06 - Naive Bayes: weekly/w06-naive-bayes.md
+    - W07 - GA & BN/TAN: weekly/w07-ga-bn.md
+    - W08 - Midterm: weekly/w08-midterm.md
+  - "Part II: Post-Midterm":
+    - W09 - HMM: weekly/w09-hmm.md
+    - W10 - SVM Linear: weekly/w10-svm-linear.md
+    - W11 - SVM Kernel: weekly/w11-svm-kernel.md
+    - W12 - PCA: weekly/w12-pca.md
+    - W13 - LDA: weekly/w13-lda.md
+    - W14 - Ensemble: weekly/w14-ensemble.md
+    - W15 - Synthesis: weekly/w15-synthesis.md
