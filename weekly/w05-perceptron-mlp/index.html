@@ -1,0 +1,1512 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Assignment for CO3117 ML, Semester 261">
+      
+      
+        <meta name="author" content="Lê Phạm Tiến Long">
+      
+      
+      
+        <link rel="prev" href="../../pre-release/PRE_RELEASE_CATCHUP/">
+      
+      
+        <link rel="next" href="../w06-naive-bayes/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>W05 - Perceptron & MLP - ML261-Assignment</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Outfit";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#w05-perceptron-delta-rule-mlp-backpropagation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="ML261-Assignment" class="md-header__button md-logo" aria-label="ML261-Assignment" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ML261-Assignment
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              W05 - Perceptron & MLP
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ML261-Assignment" class="md-nav__button md-logo" aria-label="ML261-Assignment" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ML261-Assignment
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pre-Release
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Pre-Release
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pre-release/PRE_RELEASE_CATCHUP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W01-W04 Catch-up
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Pre-Midterm
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Pre-Midterm
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W05 - Perceptron & MLP
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W05 - Perceptron & MLP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-concept-capsule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Concept Capsule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Derivation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Derivation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-perceptron-delta-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Perceptron Delta Rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-mlp-forward-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 MLP Forward Pass
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-backpropagation-chain-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Backpropagation (Chain Rule)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-code-to-theory-trace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Code-to-Theory Trace
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Code-to-Theory Trace">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#perceptron-srcfrom_scratchperceptronpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Perceptron (src/from_scratch/perceptron.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mlp-srcfrom_scratchmlppy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MLP (src/from_scratch/mlp.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Experiment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Experiment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-perceptron-binary-classification-walking-vs-laying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Perceptron: Binary Classification (Walking vs Laying)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-mlp-capacity-experiment-full-6-class-uci-har" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 MLP: Capacity Experiment (Full 6-class UCI HAR)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-l2-regularization-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 L2 Regularization Effect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-failure-misconception" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Failure / Misconception
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-exam-capsule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Exam Capsule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-reflection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Reflection
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-inquiry-trail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Inquiry Trail
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w06-naive-bayes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W06 - Naive Bayes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w07-ga-bn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W07 - GA & BN/TAN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w08-midterm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W08 - Midterm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Post-Midterm
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Post-Midterm
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w09-hmm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W09 - HMM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w10-svm-linear/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W10 - SVM Linear
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w11-svm-kernel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W11 - SVM Kernel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w12-pca/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W12 - PCA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w13-lda/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W13 - LDA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w14-ensemble/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W14 - Ensemble
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../w15-synthesis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    W15 - Synthesis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-concept-capsule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Concept Capsule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Derivation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Derivation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-perceptron-delta-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Perceptron Delta Rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-mlp-forward-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 MLP Forward Pass
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-backpropagation-chain-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Backpropagation (Chain Rule)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-code-to-theory-trace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Code-to-Theory Trace
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Code-to-Theory Trace">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#perceptron-srcfrom_scratchperceptronpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Perceptron (src/from_scratch/perceptron.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mlp-srcfrom_scratchmlppy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MLP (src/from_scratch/mlp.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Experiment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Experiment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-perceptron-binary-classification-walking-vs-laying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Perceptron: Binary Classification (Walking vs Laying)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-mlp-capacity-experiment-full-6-class-uci-har" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 MLP: Capacity Experiment (Full 6-class UCI HAR)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-l2-regularization-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 L2 Regularization Effect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-failure-misconception" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Failure / Misconception
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-exam-capsule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Exam Capsule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-reflection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Reflection
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-inquiry-trail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Inquiry Trail
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="w05-perceptron-delta-rule-mlp-backpropagation">W05 - Perceptron, Delta Rule, MLP, Backpropagation<a class="headerlink" href="#w05-perceptron-delta-rule-mlp-backpropagation" title="Permanent link">&para;</a></h1>
+<p><strong>Topic:</strong> Ch. 3 - Perceptron, Delta Rule, ANN, Backpropagation<br />
+<strong>Implementation Depth:</strong> A (Build)  </p>
+<hr />
+<h2 id="1-concept-capsule">1. Concept Capsule<a class="headerlink" href="#1-concept-capsule" title="Permanent link">&para;</a></h2>
+<p>The <strong>Perceptron</strong> models a single artificial neuron: it computes a weighted sum of inputs <span class="arithmatex">\(z = \mathbf{w}^T\mathbf{x} + b\)</span>, passes it through a step activation, and outputs a binary class label. It learns via the <strong>Delta Rule</strong>, an error-correction mechanism that updates weights only on misclassification. The Perceptron Convergence Theorem guarantees convergence if and only if the data is linearly separable.</p>
+<p>The <strong>Multi-Layer Perceptron (MLP)</strong> stacks multiple layers of neurons with non-linear activation functions (sigmoid, ReLU) between them. This enables learning non-linearly separable decision boundaries. Training uses <strong>Backpropagation</strong>: the chain rule applied layer-by-layer from output to input to compute gradients of the loss with respect to every weight.</p>
+<p><strong>Role of non-linearity:</strong> Without non-linear activations, any composition of linear layers collapses to a single linear transformation (<span class="arithmatex">\(W_2(W_1 x) = W' x\)</span>). Non-linear activations break this collapse, giving the network the capacity to approximate arbitrary functions (Universal Approximation Theorem).</p>
+<h2 id="2-derivation">2. Derivation<a class="headerlink" href="#2-derivation" title="Permanent link">&para;</a></h2>
+<h3 id="21-perceptron-delta-rule">2.1 Perceptron Delta Rule<a class="headerlink" href="#21-perceptron-delta-rule" title="Permanent link">&para;</a></h3>
+<p>The Perceptron predicts <span class="arithmatex">\(\hat{y}^{(i)} \in \{0, 1\}\)</span> using <span class="arithmatex">\(z = \mathbf{w}^T\mathbf{x} + b\)</span> and the step function:</p>
+<div class="arithmatex">\[
+\phi(z) = \begin{cases} 1 &amp; \text{if } z \ge 0 \\ 0 &amp; \text{if } z &lt; 0 \end{cases}
+\]</div>
+<p>The weight update rule:</p>
+<div class="arithmatex">\[
+\Delta w_j = \eta \left(y^{(i)} - \hat{y}^{(i)}\right) x_j^{(i)}
+\]</div>
+<div class="arithmatex">\[
+w_j := w_j + \Delta w_j
+\]</div>
+<p><strong>Geometric interpretation:</strong> The weight vector <span class="arithmatex">\(\mathbf{w}\)</span> is the normal to the decision hyperplane <span class="arithmatex">\(\mathbf{w}^T\mathbf{x} + b = 0\)</span>. On a false negative (<span class="arithmatex">\(y=1, \hat{y}=0\)</span>), the update <span class="arithmatex">\(\mathbf{w} \leftarrow \mathbf{w} + \eta\mathbf{x}\)</span> rotates the hyperplane toward the misclassified point. On a false positive, it rotates away.</p>
+<h3 id="22-mlp-forward-pass">2.2 MLP Forward Pass<a class="headerlink" href="#22-mlp-forward-pass" title="Permanent link">&para;</a></h3>
+<p>For a network with <span class="arithmatex">\(L\)</span> layers, the forward pass computes:</p>
+<div class="arithmatex">\[
+z^{(l)} = a^{(l-1)} W^{(l)} + b^{(l)}, \quad a^{(l)} = \phi(z^{(l)})
+\]</div>
+<p>where <span class="arithmatex">\(a^{(0)} = X\)</span> (input) and <span class="arithmatex">\(a^{(L)} = \text{softmax}(z^{(L)})\)</span> (output).</p>
+<h3 id="23-backpropagation-chain-rule">2.3 Backpropagation (Chain Rule)<a class="headerlink" href="#23-backpropagation-chain-rule" title="Permanent link">&para;</a></h3>
+<p>Given categorical cross-entropy loss <span class="arithmatex">\(L = -\frac{1}{N}\sum y \log \hat{y}\)</span>, the gradients are computed backwards:</p>
+<ol>
+<li><strong>Output error:</strong> <span class="arithmatex">\(\delta^{(L)} = a^{(L)} - y\)</span> (softmax + cross-entropy simplification)</li>
+<li><strong>Hidden layer error:</strong> <span class="arithmatex">\(\delta^{(l)} = (\delta^{(l+1)} {W^{(l+1)}}^T) \odot \phi'(z^{(l)})\)</span></li>
+<li><strong>Weight gradients:</strong> <span class="arithmatex">\(\frac{\partial L}{\partial W^{(l)}} = \frac{1}{N} {a^{(l-1)}}^T \delta^{(l)}\)</span></li>
+<li><strong>Bias gradients:</strong> <span class="arithmatex">\(\frac{\partial L}{\partial b^{(l)}} = \frac{1}{N} \sum \delta^{(l)}\)</span></li>
+</ol>
+<h2 id="3-code-to-theory-trace">3. Code-to-Theory Trace<a class="headerlink" href="#3-code-to-theory-trace" title="Permanent link">&para;</a></h2>
+<h3 id="perceptron-srcfrom_scratchperceptronpy">Perceptron (<code>src/from_scratch/perceptron.py</code>)<a class="headerlink" href="#perceptron-srcfrom_scratchperceptronpy" title="Permanent link">&para;</a></h3>
+<p>The Delta Rule maps directly to:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span> <span class="o">*</span> <span class="p">(</span><span class="n">target</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xi</span><span class="p">))</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="bp">self</span><span class="o">.</span><span class="n">w_</span> <span class="o">+=</span> <span class="n">update</span> <span class="o">*</span> <span class="n">xi</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="bp">self</span><span class="o">.</span><span class="n">b_</span> <span class="o">+=</span> <span class="n">update</span>
+</code></pre></div>
+<h3 id="mlp-srcfrom_scratchmlppy">MLP (<code>src/from_scratch/mlp.py</code>)<a class="headerlink" href="#mlp-srcfrom_scratchmlppy" title="Permanent link">&para;</a></h3>
+<p>The forward pass maps to <code>_forward()</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">z</span> <span class="o">=</span> <span class="n">a</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">biases_</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>     <span class="c1"># z^(l) = a^(l-1) W + b</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_act_fn</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;</span> <span class="n">n_layers</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">softmax</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+</code></pre></div>
+<p>The backward pass maps to <code>_backward()</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">delta</span> <span class="o">=</span> <span class="n">a_cache</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y_onehot</span>                      <span class="c1"># Step 1: output error</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">)):</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">dW</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">a_cache</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">delta</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>               <span class="c1"># Step 3: weight gradient</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">db</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>  <span class="c1"># Step 4: bias gradient</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">delta</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_act_deriv</span><span class="p">(</span><span class="n">a_cache</span><span class="p">[</span><span class="n">l</span><span class="p">])</span>  <span class="c1"># Step 2</span>
+</code></pre></div>
+<p><strong>Numerical gradient check</strong> (<code>numerical_gradient_check()</code>) validates correctness using finite differences. Result: relative error <span class="arithmatex">\(\approx 3 \times 10^{-10}\)</span>, confirming the backprop implementation is correct.</p>
+<h2 id="4-experiment">4. Experiment<a class="headerlink" href="#4-experiment" title="Permanent link">&para;</a></h2>
+<h3 id="41-perceptron-binary-classification-walking-vs-laying">4.1 Perceptron: Binary Classification (Walking vs Laying)<a class="headerlink" href="#41-perceptron-binary-classification-walking-vs-laying" title="Permanent link">&para;</a></h3>
+<p><em>Table 1: Perceptron binary classification on UCI HAR (Walking vs Laying, normalized, <span class="arithmatex">\(\eta = 0.01\)</span>, 20 epochs). Source: <code>src/baseline/perceptron_eval.py</code>.</em>
+<a id="table-1"></a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Train Acc</th>
+<th style="text-align: left;">Test Acc</th>
+<th style="text-align: left;">Epochs to Converge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Custom Perceptron</td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0000\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0000\)</span></td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Scikit-Learn Perceptron</td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0000\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(1.0000\)</span></td>
+<td style="text-align: left;">N/A</td>
+</tr>
+</tbody>
+</table>
+<p>Walking vs Laying is highly linearly separable in the 561-dimensional feature space, confirming the Perceptron works correctly on separable data.</p>
+<h3 id="42-mlp-capacity-experiment-full-6-class-uci-har">4.2 MLP: Capacity Experiment (Full 6-class UCI HAR)<a class="headerlink" href="#42-mlp-capacity-experiment-full-6-class-uci-har" title="Permanent link">&para;</a></h3>
+<p><em>Table 2: MLP capacity experiment on UCI HAR (6-class, normalized, ReLU, <span class="arithmatex">\(\eta = 0.01\)</span>, 100 epochs, full-batch GD). Source: <code>src/baseline/mlp_eval.py</code>.</em>
+<a id="table-2"></a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Architecture</th>
+<th style="text-align: left;">Train Acc</th>
+<th style="text-align: left;">Test Acc</th>
+<th style="text-align: left;">Test Macro-F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Small [32]</td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8587\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8178\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8134\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Medium [128]</td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8566\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8324\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8272\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Large [256, 128]</td>
+<td style="text-align: left;"><span class="arithmatex">\(0.9051\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8778\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8753\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Sklearn MLP (128, SGD)</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;"><span class="arithmatex">\(0.9494\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.9496\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Observations:</strong></p>
+<ul>
+<li>Increasing capacity (more hidden units / deeper layers) improves performance, but the train-test gap also increases, signaling overfitting risk.</li>
+<li>Sklearn's MLP outperforms our implementation at the same architecture because it uses momentum, adaptive learning rate schedules, and mini-batch SGD, whereas our implementation uses vanilla full-batch gradient descent.</li>
+</ul>
+<h3 id="43-l2-regularization-effect">4.3 L2 Regularization Effect<a class="headerlink" href="#43-l2-regularization-effect" title="Permanent link">&para;</a></h3>
+<p><em>Table 3: Effect of L2 regularization on MLP [128] (same config as <a href="#table-2">Table 2</a>). Source: <code>src/baseline/mlp_eval.py</code>.</em>
+<a id="table-3"></a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><span class="arithmatex">\(\lambda\)</span></th>
+<th style="text-align: left;">Train Acc</th>
+<th style="text-align: left;">Test Acc</th>
+<th style="text-align: left;">Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="arithmatex">\(0.0\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8566\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8324\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.0243\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="arithmatex">\(10^{-4}\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8566\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8324\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.0243\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="arithmatex">\(10^{-3}\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8565\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8324\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.0241\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="arithmatex">\(10^{-2}\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8562\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.8327\)</span></td>
+<td style="text-align: left;"><span class="arithmatex">\(0.0235\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>L2 regularization slightly reduces the generalization gap. The effect is modest because 100 epochs of full-batch GD does not overfit severely in this setting.</p>
+<h2 id="5-failure-misconception">5. Failure / Misconception<a class="headerlink" href="#5-failure-misconception" title="Permanent link">&para;</a></h2>
+<p><strong>The XOR Problem:</strong> The Perceptron cannot learn XOR because the two classes are not linearly separable. My Perceptron code oscillates indefinitely on XOR unless stopped by <code>max_iter</code>. However, my MLP with a single hidden layer of 8 sigmoid units solves XOR perfectly (predictions: <code>[0, 1, 1, 0]</code>), demonstrating that a non-linear hidden layer is both necessary and sufficient to break linear inseparability.</p>
+<h2 id="6-exam-capsule">6. Exam Capsule<a class="headerlink" href="#6-exam-capsule" title="Permanent link">&para;</a></h2>
+<p>The Perceptron is a linear binary classifier that updates weights via the Delta Rule: <span class="arithmatex">\(\Delta w = \eta(y - \hat{y})x\)</span>. The Perceptron Convergence Theorem guarantees convergence on linearly separable data, but the algorithm diverges on non-separable data (e.g., XOR). Multi-Layer Perceptrons overcome this limitation by introducing hidden layers with non-linear activations. Training uses Backpropagation, which applies the chain rule layer-by-layer to compute <span class="arithmatex">\(\partial L / \partial W^{(l)}\)</span>. Key practical considerations include weight initialization (He/Xavier), regularization (L2 weight decay, dropout), and learning rate scheduling. Increasing network capacity (width/depth) improves expressiveness but risks overfitting without regularization.</p>
+<h2 id="7-reflection">7. Reflection<a class="headerlink" href="#7-reflection" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>What I can explain now:</strong> The complete forward-backward pipeline, from input through hidden activations to softmax output, and back through the chain rule to weight gradients. I can also verify my gradients numerically.</li>
+<li><strong>Uncertainties:</strong> Mini-batch SGD with momentum produces significantly better results (sklearn reaches 94.9% vs our 83.2%). Understanding adaptive optimizers (Adam, RMSProp) and their interaction with learning rate schedules is a clear next step.</li>
+<li><strong>Next steps:</strong> Investigate why mini-batch + momentum is so much more effective than full-batch GD on this dataset; explore dropout as an alternative regularization strategy.</li>
+</ul>
+<h2 id="8-inquiry-trail">8. Inquiry Trail<a class="headerlink" href="#8-inquiry-trail" title="Permanent link">&para;</a></h2>
+<ul>
+<li>AI was used to scaffold the initial Perceptron and MLP class structure.</li>
+<li>I verified correctness by: (1) running the numerical gradient check (relative error ~3e-10), (2) confirming the Perceptron matches sklearn on UCI HAR, and (3) confirming the MLP solves XOR (which the Perceptron cannot).</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "header.autohide", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
