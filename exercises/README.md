@@ -1,0 +1,3 @@
+# Exercises
+
+Weekly written drills.
